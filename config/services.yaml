@@ -25,3 +25,31 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Connection\LdapConnection:
+        arguments:
+            $url: '%env(string:LDAP_URL)%'
+
+    App\Provider\DomainProvider:
+        arguments: [!tagged app.domain_provider]
+
+    App\Provider\LdapDomainProvider:
+        tags: ['app.domain_provider']
+        arguments:
+            $base: '%env(string:LDAP_DOMAIN_BASE)%'
+            $filter: '%env(string:LDAP_DOMAIN_FILTER)%'
+            $attribute: '%env(string:LDAP_DOMAIN_ATTRIBUTE)%'
+
+    App\Provider\DoctrineDomainProvider:
+        tags: ['app.domain_provider']
+        arguments:
+            $query: '%env(string:DATABASE_DOMAIN_QUERY)%'
+
+    App\Provider\UsernameProvider:
+        arguments: [!tagged app.username_provider]
+
+    App\Provider\LdapUsernameProvider:
+        tags: ['app.username_provider']
+        arguments:
+            $base: '%env(string:LDAP_USERNAME_BASE)%'
+            $filter: '%env(string:LDAP_USERNAME_FILTER)%'
+            $attribute: '%env(string:LDAP_USERNAME_ATTRIBUTE)%'
