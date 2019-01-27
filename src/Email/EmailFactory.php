@@ -10,14 +10,14 @@
  */
 
 
-namespace App\Tokenizer;
+namespace App\Email;
 
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\EmailParser;
 use Egulias\EmailValidator\EmailLexer;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
-class EmailTokenizer
+class EmailFactory
 {
     private $validator;
     private $parser;
@@ -29,35 +29,14 @@ class EmailTokenizer
     }
 
     /**
-     * Tokenize email to local and domain parts
-     *
-     * @param string $email
-     * @return array
+     * @param $email
+     * @return Email|null
      */
-    public function tokenize(string $email): array
-    {
-        if ($this->validator->isValid($email, new RFCValidation())) {
-            return $this->parser->parse($email);
-        } else {
-            return null;
-        }
-    }
-
-    public function getDomainPart(string $email): string
+    public function fromString($email)
     {
         if ($this->validator->isValid($email, new RFCValidation())) {
             $parts = $this->parser->parse($email);
-            return $parts['domain'];
-        } else {
-            return null;
-        }
-    }
-
-    public function getLocalPart(string $email): string
-    {
-        if ($this->validator->isValid($email, new RFCValidation())) {
-            $parts = $this->parser->parse($email);
-            return $parts['local'];
+            return new Email($parts['local'], $parts['domain']);
         } else {
             return null;
         }

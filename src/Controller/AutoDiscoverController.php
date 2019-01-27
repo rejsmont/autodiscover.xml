@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Provider\DomainProvider;
 use App\Provider\UsernameProvider;
-use App\Tokenizer\EmailTokenizer;
+use App\Email\EmailFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,19 +20,18 @@ class AutoDiscoverController extends AbstractController
      * @param Request $request
      * @param DomainProvider $domainProvider
      * @param UsernameProvider $usernameProvider
-     * @param EmailTokenizer $emailTokenizer
+     * @param EmailFactory $emailFactory
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/mail/config-v1.1.xml", name="mozilla")
      */
     public function mozilla(Request $request, DomainProvider $domainProvider,
-                            UsernameProvider $usernameProvider, EmailTokenizer $emailTokenizer)
+                            UsernameProvider $usernameProvider, EmailFactory $emailFactory)
     {
-        $email = $request->query->get('emailaddress');
-        $domain = $emailTokenizer->getDomainPart($email);
+        $email = $emailFactory->fromString($request->query->get('emailaddress'));
         $username = null;
 
-        if ((null !== $domain)&&( $domainProvider->verifyDomain($domain))) {
+        if ((null !== $email)&&($domainProvider->verifyDomain($email->getDomainPart()))) {
             $username = $usernameProvider->getUsername($email);
         }
 
