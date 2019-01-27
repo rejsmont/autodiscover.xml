@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <clientConfig version="1.1">
     <emailProvider id="{{ provider.domain }}">
         <domain>{{ user.email.domainPart }}</domain>
         <displayName>{{ provider.name }}</displayName>
         {% if provider.shortName is not null %}<displayShortName>{{ shortName }}</displayShortName>{% endif %}
-        {% for server in imaps %}
+{% for server in imaps %}
         <incomingServer type="imap">
-            {% include 'mozilla-server.xml.twig' with {'server': server, 'user': user} only %}
+{% include 'mozilla-server.xml.twig' with {'server': server, 'user': user} only %}
         </incomingServer>
-        {% endfor %}
-        {% for server in pop3s %}
+{% endfor %}
+{% for server in pop3s %}
         <incomingServer type="pop3">
-            {% include 'mozilla-server.xml.twig' with {'server': server, 'user': user} only %}
+{% include 'mozilla-server.xml.twig' with {'server': server, 'user': user} only %}
         </incomingServer>
-        {% endfor %}
-        {% for server in smtps %}
+{% endfor %}
+{% for server in smtps %}
         <outgoingServer type="smtp">
-            {% include 'mozilla-server.xml.twig' with {'server': server, 'user': user} only %}
+{% include 'mozilla-server.xml.twig' with {'server': server, 'user': user} only %}
         </outgoingServer>
-        {% endfor %}
+{% endfor %}
     </emailProvider>
 </clientConfig>
