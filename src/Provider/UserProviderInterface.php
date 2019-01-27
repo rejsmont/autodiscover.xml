@@ -16,11 +16,18 @@ namespace App\Provider;
  * Interface UsernameProviderInterface
  * @package App\Provider
  */
-interface UsernameProviderInterface
+interface UserProviderInterface
 {
     /**
      * @param string $email
      * @return string
      */
-    public function getUsername(string $email);
+    public function getUserName(string $email);
+
+    /**
+     * @param string $email
+     * @return mixed
+     */
+    public function getDisplayName(string $email);
+
 }

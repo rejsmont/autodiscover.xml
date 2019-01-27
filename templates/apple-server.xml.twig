@@ -1,0 +1,10 @@
+                <key>{{ type }}MailServerAuthentication</key>
+                <string>{{ server.authApple }}</string>
+                <key>{{ type }}MailServerHostName</key>
+                <string>{{ server.hostname }}</string>
+                <key>{{ type }}MailServerPortNumber</key>
+                <integer>{{ server.port }}</integer>
+                <key>{{ type }}MailServerUseSSL</key>
+                {% if server.sslEnabled or server.tlsEnabled %}<true/>{% else %}<false/>{% endif %}
+                <key>{{ type }}MailServerUsername</key>
+                <string>{{ user.userName }}</string>

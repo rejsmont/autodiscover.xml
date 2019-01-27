@@ -1,0 +1,14 @@
+                    <Server>{{ server.hostname }}</Server>
+                    <Port>{{ server.port }}</Port>
+                    {% if user.userName.domainPart is not null %}
+                        <DomainRequired>on</DomainRequired>
+                        <DomainName>{{ user.userName.domainPart }}</DomainName>
+                    {% endif %}
+                    <SPA>{{ server.authSecure ? 'on' : 'off' }}</SPA>
+                    {% if server.tlsEnabled %}
+                        <Encryption>TLS</Encryption>
+                    {% else %}
+                        <SSL>{{ server.sslEnabled ? 'on' : 'off' }}</SSL>
+                    {% endif %}
+                    <AuthRequired>on</AuthRequired>
+                    <LoginName>{{ user.userName.localPart }}</LoginName>

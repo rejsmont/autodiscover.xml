@@ -12,12 +12,11 @@
 
 namespace App\Provider;
 
-use App\Provider\UsernameProviderInterface;
 
-class UsernameProvider implements UsernameProviderInterface
+class UserProvider implements UserProviderInterface
 {
     /**
-     * @var UsernameProviderInterface[]
+     * @var UserProviderInterface[]
      */
     private $providers;
 
@@ -26,10 +25,22 @@ class UsernameProvider implements UsernameProviderInterface
         $this->providers = $providers;
     }
 
-    public function getUsername(string $email)
+    public function getUserName(string $email)
     {
         foreach ($this->providers as $provider) {
-            $username = $provider->getUsername($email);
+            $username = $provider->getUserName($email);
+            if (null !== $username) {
+                return $username;
+            }
+        }
+
+        return null;
+    }
+
+    public function getDisplayName(string $email)
+    {
+        foreach ($this->providers as $provider) {
+            $username = $provider->getDisplayName($email);
             if (null !== $username) {
                 return $username;
             }

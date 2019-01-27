@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Autodiscover xmlns="http://schemas.microsoft.com/exchange/autodiscover/responseschema/2006">
+    <Response xmlns="http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a">
+        <User>
+            <DisplayName>{{ user.displayName }}</DisplayName>
+        </User>
+        <Account>
+            <AccountType>email</AccountType>
+            <Action>settings</Action>
+            {% for server in imaps %}
+                <Protocol>
+                    <Type>IMAP</Type>
+                    {% include 'microsoft-server.xml.twig' with {'server': server, 'user': user} only %}
+                </Protocol>
+            {% endfor %}
+            {% for server in pop3s %}
+                <Protocol>
+                    <Type>POP3</Type>
+                    {% include 'microsoft-server.xml.twig' with {'server': server, 'user': user} only %}
+
+                </Protocol>
+            {% endfor %}
+            {% for server in smtps %}
+                <Protocol>
+                    <Type>SMTP</Type>
+                    {% include 'microsoft-server.xml.twig' with {'server': server, 'user': user} only %}
+                </Protocol>
+            {% endfor %}
+        </Account>
+    </Response>
+</Autodiscover>

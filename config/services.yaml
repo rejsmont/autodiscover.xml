@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-
+    env(PROVIDER_SHORT_NAME):
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -44,12 +44,22 @@ services:
         arguments:
             $query: '%env(string:DATABASE_DOMAIN_QUERY)%'
 
-    App\Provider\UsernameProvider:
+    App\Provider\UserProvider:
         arguments: [!tagged app.username_provider]
 
-    App\Provider\LdapUsernameProvider:
+    App\Provider\LdapUserProvider:
         tags: ['app.username_provider']
         arguments:
-            $base: '%env(string:LDAP_USERNAME_BASE)%'
-            $filter: '%env(string:LDAP_USERNAME_FILTER)%'
-            $attribute: '%env(string:LDAP_USERNAME_ATTRIBUTE)%'
+            $base: '%env(string:LDAP_USER_BASE)%'
+            $filter: '%env(string:LDAP_USER_FILTER)%'
+            $userNameAttribute: '%env(string:LDAP_USER_NAME_ATTRIBUTE)%'
+            $displayNameAttribute: '%env(string:LDAP_USER_DN_ATTRIBUTE)%'
+
+    App\Provider\ServiceProvider:
+        arguments:
+            $imaps: '%env(json:IMAP_SERVERS)%'
+            $smtps: '%env(json:SMTP_SERVERS)%'
+            $pop3s: '%env(json:POP3_SERVERS)%'
+            $providerName: '%env(string:PROVIDER_NAME)%'
+            $providerDomain: '%env(string:PROVIDER_DOMAIN)%'
+            $providerShortName: '%env(string:PROVIDER_SHORT_NAME)%'

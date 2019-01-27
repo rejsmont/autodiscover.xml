@@ -18,7 +18,7 @@ class Email
     private $localPart;
     private $domainPart;
 
-    public function __construct(string $localPart, string $domainPart)
+    public function __construct(string $localPart, $domainPart)
     {
         $this->localPart = $localPart;
         $this->domainPart = $domainPart;
@@ -42,6 +42,10 @@ class Email
 
     public function __toString()
     {
-        return $this->localPart . '@' . $this->domainPart;
+        if (null !== $this->domainPart) {
+            return $this->localPart . '@' . $this->domainPart;
+        } else {
+            return $this->localPart;
+        }
     }
 }
