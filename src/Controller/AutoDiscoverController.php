@@ -55,7 +55,7 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($request->query->get('emailaddress'));
 
         $response = $this->render('mozilla.xml.twig', $this->fetchData($email));
-        $response->headers->set('Content-Type', 'xml; chatset=utf-8');
+        $response->headers->set('Content-Type', 'xml');
 
         return $response;
     }
