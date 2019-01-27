@@ -10,11 +10,11 @@
  */
 
 
-namespace App\Provider;
+namespace AutodiscoverXml\Provider;
 
 /**
  * Interface DomainProviderInterface
- * @package App\Provider
+ * @package AutodiscoverXml\Provider
  */
 interface DomainProviderInterface
 {

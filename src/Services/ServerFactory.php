@@ -10,12 +10,12 @@
  */
 
 
-namespace App\Services;
+namespace AutodiscoverXml\Services;
 
 
 /**
  * Class ServerFactory
- * @package App\Services
+ * @package AutodiscoverXml\Services
  * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
  */
 class ServerFactory

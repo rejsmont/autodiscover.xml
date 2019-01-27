@@ -10,7 +10,7 @@
  */
 
 
-namespace App\Provider;
+namespace AutodiscoverXml\Provider;
 
 
 class UserProvider implements UserProviderInterface

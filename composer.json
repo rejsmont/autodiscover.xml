@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "AutodiscoverXml\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "AutodiscoverXml\\Tests\\": "tests/"
         }
     },
     "replace": {

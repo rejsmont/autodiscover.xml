@@ -10,14 +10,14 @@
  */
 
 
-namespace App\Provider;
+namespace AutodiscoverXml\Provider;
 
-use App\Connection\LdapConnection;
+use AutodiscoverXml\Connection\LdapConnection;
 use Symfony\Component\Ldap\Entry;
 
 /**
  * Class LdapUsernameProvider
- * @package App\Provider
+ * @package AutodiscoverXml\Provider
  * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
  */
 class LdapUserProvider implements UserProviderInterface

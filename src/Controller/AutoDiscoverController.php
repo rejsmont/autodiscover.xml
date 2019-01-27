@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Controller;
+namespace AutodiscoverXml\Controller;
 
-use App\Email\Email;
-use App\Provider\DomainProvider;
-use App\Provider\ServiceProvider;
-use App\Email\EmailFactory;
-use App\User\UserFactory;
+use AutodiscoverXml\Email\Email;
+use AutodiscoverXml\Provider\DomainProvider;
+use AutodiscoverXml\Provider\ServiceProvider;
+use AutodiscoverXml\Email\EmailFactory;
+use AutodiscoverXml\User\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class AutoDiscoverController
- * @package App\Controller
+ * @package AutodiscoverXml\Controller
  * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
  */
 class AutoDiscoverController extends AbstractController
@@ -55,7 +55,7 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($request->query->get('emailaddress'));
 
         $response = $this->render('mozilla.xml.twig', $this->fetchData($email));
-        $response->headers->set('Content-Type', 'xml');
+        $response->headers->set('Content-Type', 'xml; chatset=utf-8');
 
         return $response;
     }
@@ -73,7 +73,7 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($string);
 
         $response = $this->render('microsoft.xml.twig', $this->fetchData($email));
-        $response->headers->set('Content-Type', 'xml');
+        $response->headers->set('Content-Type', 'xml; chatset=utf-8');
 
         return $response;
     }
@@ -89,7 +89,8 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($request->query->get('email'));
 
         $response = $this->render('apple.xml.twig', $this->fetchData($email));
-        $response->headers->set('Content-Type', 'xml');
+        $response->headers->set('Content-Type', 'application/x-apple-aspen-config; chatset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="${filename}"');
 
         return $response;
     }

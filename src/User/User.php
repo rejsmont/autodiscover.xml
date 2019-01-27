@@ -10,10 +10,10 @@
  */
 
 
-namespace App\User;
+namespace AutodiscoverXml\User;
 
 
-use App\Email\Email;
+use AutodiscoverXml\Email\Email;
 
 class User
 {

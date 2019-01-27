@@ -10,7 +10,7 @@
  */
 
 
-namespace App\Services;
+namespace AutodiscoverXml\Services;
 
 
 class Imap extends Server

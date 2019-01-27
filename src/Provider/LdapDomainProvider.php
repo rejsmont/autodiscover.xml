@@ -10,13 +10,13 @@
  */
 
 
-namespace App\Provider;
+namespace AutodiscoverXml\Provider;
 
-use App\Connection\LdapConnection;
+use AutodiscoverXml\Connection\LdapConnection;
 
 /**
  * Class LdapDomainProvider
- * @package App\Provider
+ * @package AutodiscoverXml\Provider
  * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
  */
 class LdapDomainProvider implements DomainProviderInterface

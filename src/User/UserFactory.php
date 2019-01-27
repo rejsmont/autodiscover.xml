@@ -10,11 +10,11 @@
  */
 
 
-namespace App\User;
+namespace AutodiscoverXml\User;
 
-use App\Email\Email;
-use App\Email\EmailFactory;
-use App\Provider\UserProvider;
+use AutodiscoverXml\Email\Email;
+use AutodiscoverXml\Email\EmailFactory;
+use AutodiscoverXml\Provider\UserProvider;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\EmailParser;
 use Egulias\EmailValidator\EmailLexer;

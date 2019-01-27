@@ -10,7 +10,7 @@
  */
 
 
-namespace App\Connection;
+namespace AutodiscoverXml\Connection;
 
 use Symfony\Component\Ldap\Ldap;
 

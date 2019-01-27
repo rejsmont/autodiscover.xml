@@ -10,11 +10,11 @@
  */
 
 
-namespace App\Provider;
+namespace AutodiscoverXml\Provider;
 
 
-use App\Services\Provider;
-use App\Services\ServerFactory;
+use AutodiscoverXml\Services\Provider;
+use AutodiscoverXml\Services\ServerFactory;
 
 class ServiceProvider
 {

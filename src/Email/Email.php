@@ -10,7 +10,7 @@
  */
 
 
-namespace App\Email;
+namespace AutodiscoverXml\Email;
 
 
 class Email

@@ -10,14 +10,14 @@
  */
 
 
-namespace App\Provider;
+namespace AutodiscoverXml\Provider;
 
 use Doctrine\DBAL\Driver\Connection;
 
 
 /**
  * Class DoctrineDomainProvider
- * @package App\Provider
+ * @package AutodiscoverXml\Provider
  * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
  */
 class DoctrineDomainProvider implements DomainProviderInterface

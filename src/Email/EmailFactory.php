@@ -10,7 +10,7 @@
  */
 
 
-namespace App\Email;
+namespace AutodiscoverXml\Email;
 
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\EmailParser;

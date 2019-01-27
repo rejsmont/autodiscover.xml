@@ -10,9 +10,9 @@
  */
 
 
-namespace App\Provider;
+namespace AutodiscoverXml\Provider;
 
-use App\Provider\DomainProviderInterface;
+use AutodiscoverXml\Provider\DomainProviderInterface;
 
 class DomainProvider implements DomainProviderInterface
 {
