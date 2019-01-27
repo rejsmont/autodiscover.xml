@@ -3,7 +3,9 @@
     <emailProvider id="{{ provider.domain }}">
         <domain>{{ user.email.domainPart }}</domain>
         <displayName>{{ provider.name }}</displayName>
-        {% if provider.shortName is not null %}<displayShortName>{{ shortName }}</displayShortName>{% endif %}
+{% if provider.shortName is not null %}
+        <displayShortName>{{ shortName }}</displayShortName>
+{% endif %}
 {% for server in imaps %}
         <incomingServer type="imap">
 {% include 'mozilla-server.xml.twig' with {'server': server, 'user': user} only %}
