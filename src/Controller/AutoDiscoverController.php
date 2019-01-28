@@ -109,7 +109,7 @@ class AutoDiscoverController extends AbstractController
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 } else {
                     $this->logger->info('activesync-redirect.xml.twig');
-                    $response = $this->render('activesync-redirect.xml.twig', $data);
+                    $response = $this->render('activesync.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 }
                 break;
