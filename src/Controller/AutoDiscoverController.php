@@ -95,7 +95,7 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($string);
         $data = $this->fetchData($email);
         dump($data);
-        $this->logger->info($data);
+        $this->logger->info(var_export($data, true));
         switch($schema) {
             case 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a':
                 $this->logger->info('microsoft.xml.twig');
