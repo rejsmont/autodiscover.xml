@@ -109,7 +109,7 @@ class AutoDiscoverController extends AbstractController
                 if ((null !== $httpUser)&&($httpUser != $data['user']->getUserName())) {
                     throw new UnauthorizedHttpException('ActiveSync');
                 }
-                if ($email == $data['user']->getUserName()) {
+                if (($email == $data['user']->getUserName())||($httpUser == $data['user']->getUserName())) {
                     $response = $this->render('activesync.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 } else {
