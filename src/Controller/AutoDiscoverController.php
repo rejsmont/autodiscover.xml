@@ -61,7 +61,7 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($request->query->get('emailaddress'));
 
         $response = $this->render('mozilla.xml.twig', $this->fetchData($email));
-        $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+        $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
 
         return $response;
     }
@@ -99,15 +99,15 @@ class AutoDiscoverController extends AbstractController
         switch($schema) {
             case 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a':
                 $response = $this->render('microsoft.xml.twig', $data);
-                $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+                $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 break;
             case 'http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006':
                 if ($email == $data['user']->getUserName()) {
                     $response = $this->render('activesync.xml.twig', $data);
-                    $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+                    $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 } else {
                     $response = $this->render('activesync-redirect.xml.twig', $data);
-                    $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+                    $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 }
                 break;
         }
@@ -126,7 +126,7 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($request->query->get('email'));
 
         $response = $this->render('apple.xml.twig', $this->fetchData($email));
-        $response->headers->set('Content-Type', 'application/x-apple-aspen-config; chatset=utf-8');
+        $response->headers->set('Content-Type', 'application/x-apple-aspen-config; charset=utf-8');
         $response->headers->set('Content-Disposition', 'attachment; filename="${filename}"');
 
         return $response;
