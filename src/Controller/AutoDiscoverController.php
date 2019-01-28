@@ -95,17 +95,20 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($string);
         $data = $this->fetchData($email);
         dump($data);
-
+        $this->logger->info($data);
         switch($schema) {
             case 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a':
+                $this->logger->info('microsoft.xml.twig');
                 $response = $this->render('microsoft.xml.twig', $data);
                 $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 break;
             case 'http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006':
                 if ($email == $data['user']->getUserName()) {
+                    $this->logger->info('activesync.xml.twig');
                     $response = $this->render('activesync.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 } else {
+                    $this->logger->info('activesync-redirect.xml.twig');
                     $response = $this->render('activesync-redirect.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 }
