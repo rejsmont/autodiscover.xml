@@ -10,6 +10,7 @@ use AutodiscoverXml\User\UserFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -88,6 +89,24 @@ class AutoDiscoverController extends AbstractController
         $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
 
         return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/autodiscover/autodiscover.json", name="activesync", methods={"GET, POST"})
+     */
+    public function activesync(Request $request)
+    {
+        $data = $request->getContent();
+        $this->logger->info('Got post data:');
+        $this->logger->info($data);
+
+        return new JsonResponse([
+            'Protocol' => 'ActiveSync',
+            'Url' => $this->getParameter('activesync.url')
+        ]);
     }
 
     /**
