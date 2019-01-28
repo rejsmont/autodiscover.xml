@@ -79,7 +79,7 @@ class AutoDiscoverController extends AbstractController
         $this->logger->info('Got POST data:');
         $this->logger->info($data);
         $this->logger->info('Got POST user:');
-        $this->logger->info($data);
+        $this->logger->info($user);
         $crawler = new Crawler($data);
 
         // Find out if this is an Outlook or an ActiveSync request
