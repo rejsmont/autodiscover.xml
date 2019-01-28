@@ -75,7 +75,10 @@ class AutoDiscoverController extends AbstractController
     public function microsoft(Request $request)
     {
         $data = $request->getContent();
-        $this->logger->info('Got post data:');
+        $user = $request->getUser();
+        $this->logger->info('Got POST data:');
+        $this->logger->info($data);
+        $this->logger->info('Got POST user:');
         $this->logger->info($data);
         $crawler = new Crawler($data);
 
