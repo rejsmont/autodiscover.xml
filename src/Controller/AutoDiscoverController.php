@@ -25,6 +25,7 @@ class AutoDiscoverController extends AbstractController
     private $userFactory;
     private $emailFactory;
     private $serviceProvider;
+    private $logger;
 
 
     /**
@@ -36,12 +37,14 @@ class AutoDiscoverController extends AbstractController
      * @param ServiceProvider $serviceProvider
      */
     public function __construct(DomainProvider $domainProvider, UserFactory $userFactory,
-                                EmailFactory $emailFactory, ServiceProvider $serviceProvider)
+                                EmailFactory $emailFactory, ServiceProvider $serviceProvider,
+                                Logger $logger)
     {
         $this->domainProvider = $domainProvider;
         $this->userFactory = $userFactory;
         $this->emailFactory = $emailFactory;
         $this->serviceProvider = $serviceProvider;
+        $this->logger = $logger;
     }
 
     /**
@@ -68,7 +71,10 @@ class AutoDiscoverController extends AbstractController
      */
     public function microsoft(Request $request)
     {
-        $crawler = new Crawler($request->getContent());
+        $data = $request->getContent();
+        $this->logger->info('Got post data:');
+        $this->logger->info($data);
+        $crawler = new Crawler($data);
         $string = $crawler->filterXPath('//Autodiscover/Request/EMailAddress')->text();
         $email = $this->emailFactory->fromString($string);
 
