@@ -95,7 +95,7 @@ class AutoDiscoverController extends AbstractController
      * @param Request $request
      * @return Response
      *
-     * @Route("/autodiscover/autodiscover.json", name="activesync", methods={"GET, POST"})
+     * @Route("/autodiscover/autodiscover.json", name="activesync", methods={"GET","POST"})
      */
     public function activesync(Request $request)
     {
