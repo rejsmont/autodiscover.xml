@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Autodiscover
-        xmlns:autodiscover="http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006">
-    <autodiscover:Response>
-        <autodiscover:Culture>en:us</autodiscover:Culture>
-        <autodiscover:User>
-            <autodiscover:DisplayName>{{ user.email }}</autodiscover:DisplayName>
-            <autodiscover:EMailAddress>{{ user.userName }}</autodiscover:EMailAddress>
-        </autodiscover:User>
-        <autodiscover:Action>
-            <autodiscover:Settings>
-                <autodiscover:Server>
-                    <autodiscover:Type>MobileSync</autodiscover:Type>
-                    <autodiscover:Url>
+<Autodiscover xmlns="http://schemas.microsoft.com/exchange/autodiscover/responseschema/2006">
+    <Response xmlns="http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006">
+        <Culture>en:us</Culture>
+        <User>
+            <DisplayName>{{ user.email }}</DisplayName>
+            <EMailAddress>{{ user.userName }}</EMailAddress>
+        </User>
+        <Action>
+            <Settings>
+                <Server>
+                    <Type>MobileSync</Type>
+                    <Url>
                         {{ activesync }}
-                    </autodiscover:Url>
-                    <autodiscover:Name>
+                    </Url>
+                    <Name>
                         {{ activesync }}
-                    </autodiscover:Name>
-                </autodiscover:Server>
-            </autodiscover:Settings>
-        </autodiscover:Action>
-    </autodiscover:Response>
+                    </Name>
+                </Server>
+            </Settings>
+        </Action>
+    </Response>
 </Autodiscover>
