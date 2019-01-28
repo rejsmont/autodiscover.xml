@@ -7,6 +7,7 @@ use AutodiscoverXml\Provider\DomainProvider;
 use AutodiscoverXml\Provider\ServiceProvider;
 use AutodiscoverXml\Email\EmailFactory;
 use AutodiscoverXml\User\UserFactory;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,10 +36,11 @@ class AutoDiscoverController extends AbstractController
      * @param UserFactory $userFactory
      * @param EmailFactory $emailFactory
      * @param ServiceProvider $serviceProvider
+     * @param LoggerInterface $logger
      */
     public function __construct(DomainProvider $domainProvider, UserFactory $userFactory,
                                 EmailFactory $emailFactory, ServiceProvider $serviceProvider,
-                                Logger $logger)
+                                LoggerInterface $logger)
     {
         $this->domainProvider = $domainProvider;
         $this->userFactory = $userFactory;
