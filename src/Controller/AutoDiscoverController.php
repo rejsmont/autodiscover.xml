@@ -78,35 +78,41 @@ class AutoDiscoverController extends AbstractController
         $this->logger->info('Got post data:');
         $this->logger->info($data);
         $crawler = new Crawler($data);
+
+        // Find out if this is an Outlook or an ActiveSync request
+        try {
+            $schema = $crawler->filter('Request > AcceptableResponseSchema')->text();
+        } catch (\InvalidArgumentException $e) {
+            $schema = $crawler->children()->filter('default|Request > default|AcceptableResponseSchema')->text();
+        }
+
+        // Get the requested email address
         try {
             $string = $crawler->filter('Request > EMailAddress')->text();
         } catch (\InvalidArgumentException $e) {
             $string = $crawler->children()->filter('default|Request > default|EMailAddress')->text();
         }
         $email = $this->emailFactory->fromString($string);
+        $data = $this->fetchData($email);
+        dump($data);
 
-        $response = $this->render('microsoft.xml.twig', $this->fetchData($email));
-        $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+        switch($schema) {
+            case 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a':
+                $response = $this->render('microsoft.xml.twig', $data);
+                $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+                break;
+            case 'http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006':
+                if ($email == $data['user']->getUserName()) {
+                    $response = $this->render('activesync.xml.twig', $data);
+                    $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+                } else {
+                    $response = $this->render('activesync-redirect.xml.twig', $data);
+                    $response->headers->set('Content-Type', 'application/xml; chatset=utf-8');
+                }
+                break;
+        }
 
         return $response;
-    }
-
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @Route("/autodiscover/autodiscover.json", name="activesync", methods={"GET","POST"})
-     */
-    public function activesync(Request $request)
-    {
-        $data = $request->getContent();
-        $this->logger->info('Got post data:');
-        $this->logger->info($data);
-
-        return new JsonResponse([
-            'Protocol' => 'ActiveSync',
-            'Url' => $this->getParameter('activesync.url')
-        ]);
     }
 
     /**
@@ -142,13 +148,15 @@ class AutoDiscoverController extends AbstractController
         $imaps = $this->serviceProvider->getImap();
         $pop3s = $this->serviceProvider->getPop3();
         $smtps = $this->serviceProvider->getSmtp();
+        $activesync = $this->serviceProvider->getActiveSync();
 
         return [
             'user' => $user,
             'provider' => $provider,
             'imaps' => $imaps,
             'smtps' => $smtps,
-            'pop3s' => $pop3s
+            'pop3s' => $pop3s,
+            'activesync' => $activesync
         ];
     }
 }

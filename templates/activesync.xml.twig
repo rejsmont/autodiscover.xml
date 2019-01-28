@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Autodiscover
+        xmlns:autodiscover="http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006">
+    <autodiscover:Response>
+        <autodiscover:Culture>en:us</autodiscover:Culture>
+        <autodiscover:User>
+            <autodiscover:DisplayName>{{ user.displayName }}</autodiscover:DisplayName>
+            <autodiscover:EMailAddress>{{ user.email }}</autodiscover:EMailAddress>
+        </autodiscover:User>
+        <autodiscover:Action>
+            <autodiscover:Settings>
+                <autodiscover:Server>
+                    <autodiscover:Type>MobileSync</autodiscover:Type>
+                    <autodiscover:Url>
+                        {{ activesync }}
+                    </autodiscover:Url>
+                    <autodiscover:Name>
+                        {{ activesync }}
+                    </autodiscover:Name>
+                </autodiscover:Server>
+            </autodiscover:Settings>
+        </autodiscover:Action>
+    </autodiscover:Response>
+</Autodiscover>

@@ -5,7 +5,6 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     env(PROVIDER_SHORT_NAME):
-    activesync.url: "%env(ACTIVESYNC_URL)%"
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -61,6 +60,7 @@ services:
             $imaps: '%env(json:IMAP_SERVERS)%'
             $smtps: '%env(json:SMTP_SERVERS)%'
             $pop3s: '%env(json:POP3_SERVERS)%'
+            $activesync: '%env(ACTIVESYNC_URL)%'
             $providerName: '%env(string:PROVIDER_NAME)%'
             $providerDomain: '%env(string:PROVIDER_DOMAIN)%'
             $providerShortName: '%env(string:PROVIDER_SHORT_NAME)%'

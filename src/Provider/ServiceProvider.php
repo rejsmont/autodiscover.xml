@@ -24,6 +24,7 @@ class ServiceProvider
     private $imaps;
     private $smtps;
     private $pop3s;
+    private $activesync;
     private $serverFactory;
     private $providerName;
     private $providerDomain;
@@ -35,16 +36,18 @@ class ServiceProvider
      * @param $imaps
      * @param $pop3s
      * @param $smtps
+     * @param $activesync
      * @param $providerName
      * @param $providerDomain
      * @param $providerShortName
      */
-    public function __construct(ServerFactory $serverFactory, $imaps, $pop3s, $smtps,
+    public function __construct(ServerFactory $serverFactory, $imaps, $pop3s, $smtps, $activesync,
                                 $providerName, $providerDomain, $providerShortName = null)
     {
         $this->imaps = $imaps;
         $this->pop3s = $pop3s;
         $this->smtps = $smtps;
+        $this->activesync = $activesync;
         $this->serverFactory = $serverFactory;
         $this->providerName = $providerName;
         $this->providerDomain = $providerDomain;
@@ -69,6 +72,11 @@ class ServiceProvider
     public function getPop3()
     {
         return $this->createServers($this->pop3s);
+    }
+
+    public function getActiveSync()
+    {
+        return $this->activesync;
     }
 
     private function createServers($urls)
