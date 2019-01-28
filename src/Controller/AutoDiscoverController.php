@@ -13,7 +13,9 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -75,11 +77,11 @@ class AutoDiscoverController extends AbstractController
     public function microsoft(Request $request)
     {
         $data = $request->getContent();
-        $user = $request->getUser();
+        $httpUser = $request->getUser();
         $this->logger->info('Got POST data:');
         $this->logger->info($data);
         $this->logger->info('Got POST user:');
-        $this->logger->info($user);
+        $this->logger->info($httpUser);
         $crawler = new Crawler($data);
 
         // Find out if this is an Outlook or an ActiveSync request
@@ -104,6 +106,9 @@ class AutoDiscoverController extends AbstractController
                 $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 break;
             case 'http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006':
+                if ((null !== $httpUser)&&($httpUser != $data['user']->getUserName())) {
+                    throw new UnauthorizedHttpException('ActiveSync');
+                }
                 if ($email == $data['user']->getUserName()) {
                     $response = $this->render('activesync.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
