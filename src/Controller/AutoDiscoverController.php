@@ -77,7 +77,11 @@ class AutoDiscoverController extends AbstractController
         $this->logger->info('Got post data:');
         $this->logger->info($data);
         $crawler = new Crawler($data);
-        $string = $crawler->filterXPath('//Autodiscover/Request/EMailAddress')->text();
+        try {
+            $string = $crawler->filter('Request > EMailAddress')->text();
+        } catch (\InvalidArgumentException $e) {
+            $string = $crawler->children()->filter('default|Request > default|EMailAddress')->text();
+        }
         $email = $this->emailFactory->fromString($string);
 
         $response = $this->render('microsoft.xml.twig', $this->fetchData($email));
