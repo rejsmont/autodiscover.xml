@@ -1,4 +1,4 @@
-### Installation
+# Installation
 
 The project is based on the [Symfony framework](https://symfony.com),
 which makes it easy to install, configure and maintain.
