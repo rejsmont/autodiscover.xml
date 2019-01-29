@@ -69,6 +69,13 @@ SMTP_SERVERS='["smtp://smtp.${PROVIDER_DOMAIN}:587/tls"]'
 POP3_SERVERS='[]'
 ACTIVESYNC_URL=
 ```
+
+After each change in .env.local you **must** run the following command:
+```shell
+# bin/console cache:clear --env=prod
+```
+otherwise your changes won't take an effect.
+
 ---
 ## Web server configuration
 
