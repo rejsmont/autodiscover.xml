@@ -84,8 +84,9 @@ class LdapUserProvider implements UserProviderInterface
             $results = $this->ldap->query($this->base, str_replace('%s', $email, $this->filter));
             if (count($results) != 1) {
                 $this->entries[$email] = null;
+            } else {
+                $this->entries[$email] = $results[0];
             }
-            $this->entries[$email] = $results[0];
         }
 
         return $this->entries[$email];

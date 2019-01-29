@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    env(LDAP_URL): 'ldap://localhost'
+    env(LDAP_URL): ldap://localhost
     env(LDAP_DOMAIN_BASE):
     env(LDAP_DOMAIN_FILTER): (&(associatedDomain=%s)(objectClass=organizationalUnit))
     env(LDAP_DOMAIN_ATTRIBUTE): associatedDomain
@@ -12,9 +12,14 @@ parameters:
     env(LDAP_USER_FILTER): (&(mail=%s)(objectClass=person))
     env(LDAP_USER_NAME_ATTRIBUTE): mail
     env(LDAP_USER_DN_ATTRIBUTE): cn
+    env(DATABASE_DRIVER): pdo_mysql
+    env(DATABASE_URL):
     env(DATABASE_DOMAIN_QUERY):
-    env(IMAP_SERVERS): '[imap.%env(PROVIDER_DOMAIN)%]'
-    env(SMTP_SERVERS): '[smtp.%env(PROVIDER_DOMAIN)%]'
+    env(DATABASE_USER_QUERY):
+    env(DATABASE_USER_NAME_FIELD): email
+    env(DATABASE_USER_DN_FIELD): name
+    env(IMAP_SERVERS): '["imap://imap.%env(PROVIDER_DOMAIN)%/tls"]'
+    env(SMTP_SERVERS): '["smtp://smtp.%env(PROVIDER_DOMAIN)%:587/tls"]'
     env(POP3_SERVERS): '[]'
     env(ACTIVESYNC_URL):
     env(PROVIDER_NAME):
@@ -70,6 +75,13 @@ services:
             $filter: '%env(string:LDAP_USER_FILTER)%'
             $userNameAttribute: '%env(string:LDAP_USER_NAME_ATTRIBUTE)%'
             $displayNameAttribute: '%env(string:LDAP_USER_DN_ATTRIBUTE)%'
+
+    AutodiscoverXml\Provider\DoctrineUserProvider:
+        tags: ['app.username_provider']
+        arguments:
+            $query: '%env(string:DATABASE_USER_QUERY)%'
+            $userNameAttribute: '%env(string:DATABASE_USER_NAME_FIELD)%'
+            $displayNameAttribute: '%env(string:DATABASE_USER_DN_FIELD)%'
 
     AutodiscoverXml\Provider\ServiceProvider:
         arguments:

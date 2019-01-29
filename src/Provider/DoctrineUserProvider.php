@@ -12,7 +12,6 @@
 
 namespace AutodiscoverXml\Provider;
 
-use Doctrine\DBAL\Exception\ConnectionException;
 use Doctrine\DBAL\Driver\Connection;
 
 
@@ -80,8 +79,9 @@ class DoctrineUserProvider implements UserProviderInterface
             $results = $statement->fetchAll();
             if (count($results) != 1) {
                 $this->rows[$email] = null;
+            } else {
+                $this->rows[$email] = $results[0];
             }
-            $this->rows[$email] = $results[0];
         }
 
         return $this->rows[$email];
