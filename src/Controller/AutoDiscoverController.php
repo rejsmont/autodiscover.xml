@@ -63,7 +63,7 @@ class AutoDiscoverController extends AbstractController
     public function mozilla(Request $request)
     {
         $email = $this->emailFactory->fromString($request->query->get('emailaddress'));
-        $this->logger->info("Got email: " . $email);
+        $this->logger->info("Got a Mozilla request for email: " . $email);
 
         $response = $this->render('mozilla.xml.twig', $this->fetchData($email));
         $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
@@ -78,7 +78,6 @@ class AutoDiscoverController extends AbstractController
      * @return Response
      *
      * @Route("/autodiscover/autodiscover.xml", name="microsoft", methods={"POST"})
-     * @Route("/Autodiscover/Autodiscover.xml", name="Microsoft", methods={"POST"})
      */
     public function microsoft(Request $request)
     {
@@ -88,9 +87,17 @@ class AutoDiscoverController extends AbstractController
 
         // Find out if this is an Outlook or an ActiveSync request
         try {
-            $schema = $crawler->filter('Request > AcceptableResponseSchema')->text();
+            $acceptableResponse = $crawler->filter('Request > AcceptableResponseSchema')->text();
         } catch (\InvalidArgumentException $e) {
-            $schema = $crawler->children()->filter('default|Request > default|AcceptableResponseSchema')->text();
+            $acceptableResponse = $crawler->children()->filter('default|Request > default|AcceptableResponseSchema')->text();
+        }
+        if (strpos(strtolower($acceptableResponse), 'outlook') !== false) {
+            $schema = 'Outlook';
+        } elseif (strpos(strtolower($acceptableResponse), 'mobilesync') !== false) {
+            $schema = 'ActiveSync';
+        } else {
+            // Neither Outlook or ActiveSync - we do not support that
+            throw new BadRequestHttpException();
         }
 
         // Get the requested email address
@@ -102,20 +109,29 @@ class AutoDiscoverController extends AbstractController
 
         // Perform user data lookup
         $email = $this->emailFactory->fromString($string);
+        $this->logger->info("Got a Microsoft " . $schema . " request for email: " . $email);
         $data = $this->fetchData($email);
         $user = $data['user']->getUserName();
 
+        // Which response to provide?
         switch($schema) {
             // Outlook autodiscovery
-            case 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a':
+            case 'Outlook':
                 $response = $this->render('microsoft.xml.twig', $data);
                 $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 break;
             // ActiveSync autodiscovery
-            case 'http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006':
-                if ((null == $user) || ((null != $httpUser)&&($httpUser != $user))) {
+            case 'ActiveSync':
+                // If ActiveSync is not configured, return 404
+                if (null === $data['activesync']) {
+                    throw new NotFoundHttpException();
+                }
+                // If client passed authentication information, but it does not match username, return 401
+                if ((null != $httpUser)&&($httpUser != $user)) {
                     throw new UnauthorizedHttpException('ActiveSync');
-                } elseif (($email == $user) || ($httpUser == $user)) {
+                }
+                // Return ActiveSync response
+                if (($email == $user) || ($httpUser == $user)) {
                     $response = $this->render('activesync.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 } else {
@@ -124,6 +140,7 @@ class AutoDiscoverController extends AbstractController
                 }
                 break;
             default:
+                // Something weird happened, return 400
                 throw new BadRequestHttpException();
         }
 
@@ -141,6 +158,7 @@ class AutoDiscoverController extends AbstractController
     public function apple(Request $request)
     {
         $email = $this->emailFactory->fromString($request->query->get('email'));
+        $this->logger->info("Got a Apple request for email: " . $email);
 
         $response = $this->render('apple.xml.twig', $this->fetchData($email));
         $response->headers->set('Content-Type', 'application/x-apple-aspen-config; charset=utf-8');
@@ -164,7 +182,7 @@ class AutoDiscoverController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        // Fetch service data
+        // Fetch the service data
         $provider = $this->serviceProvider->getProvider();
         $imaps = $this->serviceProvider->getImap();
         $pop3s = $this->serviceProvider->getPop3();

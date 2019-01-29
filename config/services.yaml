@@ -4,7 +4,23 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    env(LDAP_URL): 'ldap://localhost'
+    env(LDAP_DOMAIN_BASE):
+    env(LDAP_DOMAIN_FILTER): (&(associatedDomain=%s)(objectClass=organizationalUnit))
+    env(LDAP_DOMAIN_ATTRIBUTE): associatedDomain
+    env(LDAP_USER_BASE):
+    env(LDAP_USER_FILTER): (&(mail=%s)(objectClass=person))
+    env(LDAP_USER_NAME_ATTRIBUTE): mail
+    env(LDAP_USER_DN_ATTRIBUTE): cn
+    env(DATABASE_DOMAIN_QUERY):
+    env(IMAP_SERVERS): '[imap.%env(PROVIDER_DOMAIN)%]'
+    env(SMTP_SERVERS): '[smtp.%env(PROVIDER_DOMAIN)%]'
+    env(POP3_SERVERS): '[]'
+    env(ACTIVESYNC_URL):
+    env(PROVIDER_NAME):
+    env(PROVIDER_DOMAIN):
     env(PROVIDER_SHORT_NAME):
+
 services:
     # default configuration for services in *this* file
     _defaults:

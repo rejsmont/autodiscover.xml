@@ -46,6 +46,11 @@ class LdapDomainProvider implements DomainProviderInterface
      */
     public function verifyDomain(string $domain): bool
     {
+        // Check if this provider is configured
+        if (null === $this->base) {
+            return false;
+        }
+
         $verified = false;
         $results = $this->ldap->query($this->base, str_replace('%s', $domain, $this->filter));
 

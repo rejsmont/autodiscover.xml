@@ -35,19 +35,19 @@ class LdapUserProvider implements UserProviderInterface
 
     /**
      * LdapUserProvider constructor.
+     * @param LdapConnection $ldap
      * @param string $base
      * @param string $filter
      * @param string $userNameAttribute
      * @param string $displayNameAttribute
-     * @param LdapConnection $ldap
      */
-    public function __construct($base, $filter, $userNameAttribute, $displayNameAttribute, LdapConnection $ldap)
+    public function __construct(LdapConnection $ldap, $base, $filter, $userNameAttribute, $displayNameAttribute)
     {
+        $this->ldap = $ldap;
         $this->base = $base;
         $this->filter = $filter;
         $this->userNameAttribute = $userNameAttribute;
         $this->displayNameAttribute = $displayNameAttribute;
-        $this->ldap = $ldap;
         $this->entries = [];
     }
 
@@ -75,16 +75,20 @@ class LdapUserProvider implements UserProviderInterface
      */
     private function getEntry(string $email)
     {
-        if (array_key_exists($email, $this->entries)) {
-            return $this->entries[$email];
-        }
-
-        $results = $this->ldap->query($this->base, str_replace('%s', $email, $this->filter));
-        if (count($results) != 1) {
+        // Check if this provider is configured
+        if (null === $this->base) {
             return null;
         }
 
-        return $results[0];
+        if (! array_key_exists($email, $this->entries)) {
+            $results = $this->ldap->query($this->base, str_replace('%s', $email, $this->filter));
+            if (count($results) != 1) {
+                $this->entries[$email] = null;
+            }
+            $this->entries[$email] = $results[0];
+        }
+
+        return $this->entries[$email];
     }
 
     /**

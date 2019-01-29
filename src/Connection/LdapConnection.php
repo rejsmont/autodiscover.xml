@@ -34,7 +34,7 @@ class LdapConnection
      * LdapConnection constructor.
      * @param string $url  LDAP server URL
      */
-    public function __construct($url = 'ldap://localhost')
+    public function __construct($url)
     {
         $this->parseUrl($url);
         $this->bound = false;
@@ -51,6 +51,7 @@ class LdapConnection
     public function query(string $base, string $filter) {
         if (! $this->bound) {
             $this->ldap->bind($this->dn, $this->password);
+            $this->bound = true;
         }
         $query = $this->ldap->query($base, $filter);
 
@@ -62,13 +63,28 @@ class LdapConnection
      *
      * @param string $url
      */
-    private function parseUrl(string $url) {
+    private function parseUrl($url) {
         $components = parse_url($url);
-        $server = $components['scheme'] . '://' . $components['host'];
-        if (array_key_exists('port', $components))
-            $server .= ':' . $components['port'];
-        $this->server = $server;
+        $scheme = $this->get($components['scheme']);
+        $host = $this->get($components['host']);
+        $port = $this->get($components['port']);
+
+        $this->server = $scheme . '://' . $host;
+        if (null !== $port) {
+            $this->server .= ':' . $port;
+        }
         $this->dn = urldecode($components['user']);
         $this->password = urldecode($components['pass']);
+    }
+
+    /**
+     * Get value from array or return default
+     *
+     * @param $var
+     * @param null $default
+     * @return null
+     */
+    private function get(&$var, $default=null) {
+        return isset($var) ? $var : $default;
     }
 }

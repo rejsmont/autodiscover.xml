@@ -12,6 +12,7 @@
 
 namespace AutodiscoverXml\Provider;
 
+use Doctrine\DBAL\Exception\ConnectionException;
 use Doctrine\DBAL\Driver\Connection;
 
 
@@ -41,10 +42,15 @@ class DoctrineDomainProvider implements DomainProviderInterface
      */
     public function verifyDomain(string $domain): bool
     {
+        if (null === $this->query) {
+            return null;
+        }
+
         $statement = $this->connection->prepare($this->query);
         $statement->bindValue(1, $domain);
         $statement->execute();
         $result = $statement->fetchAll();
+
 
         return count($result) > 0;
     }

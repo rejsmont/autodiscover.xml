@@ -46,7 +46,7 @@ class UserFactory
     }
 
     /**
-     * Create user from email
+     * Create user object from email
      *
      * @param string $email
      * @return User|null
@@ -57,6 +57,8 @@ class UserFactory
             return null;
         }
 
+        // Fetch the username from the UserProvider
+        // To prevent user list leak, fill the username with email in case user is not found
         $userNameString = $this->userProvider->getUsername($email);
         if (null === $userNameString) {
             $userNameString = $email;
