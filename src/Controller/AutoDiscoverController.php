@@ -10,13 +10,13 @@ use AutodiscoverXml\User\UserFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * Class AutoDiscoverController
@@ -53,6 +53,8 @@ class AutoDiscoverController extends AbstractController
     }
 
     /**
+     * This route handles Mozilla autoconfig requests
+     *
      * @param Request $request
      * @return Response
      *
@@ -69,19 +71,18 @@ class AutoDiscoverController extends AbstractController
     }
 
     /**
+     * This route handles Microsoft Autodiscover protocol for Outlook and ActiveSync
+     *
      * @param Request $request
      * @return Response
      *
      * @Route("/autodiscover/autodiscover.xml", name="microsoft", methods={"POST"})
+     * @Route("/Autodiscover/Autodiscover.xml", name="Microsoft", methods={"POST"})
      */
     public function microsoft(Request $request)
     {
         $data = $request->getContent();
         $httpUser = $request->getUser();
-        $this->logger->info('Got POST data:');
-        $this->logger->info($data);
-        $this->logger->info('Got POST user:');
-        $this->logger->info($httpUser);
         $crawler = new Crawler($data);
 
         // Find out if this is an Outlook or an ActiveSync request
@@ -97,19 +98,23 @@ class AutoDiscoverController extends AbstractController
         } catch (\InvalidArgumentException $e) {
             $string = $crawler->children()->filter('default|Request > default|EMailAddress')->text();
         }
+
+        // Perform user data lookup
         $email = $this->emailFactory->fromString($string);
         $data = $this->fetchData($email);
+        $user = $data['user']->getUserName();
 
         switch($schema) {
+            // Outlook autodiscovery
             case 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a':
                 $response = $this->render('microsoft.xml.twig', $data);
                 $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 break;
+            // ActiveSync autodiscovery
             case 'http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006':
-                if ((null !== $httpUser)&&($httpUser != $data['user']->getUserName())) {
+                if ((null == $user) || ((null != $httpUser)&&($httpUser != $user))) {
                     throw new UnauthorizedHttpException('ActiveSync');
-                }
-                if (($email == $data['user']->getUserName())||($httpUser == $data['user']->getUserName())) {
+                } elseif (($email == $user) || ($httpUser == $user)) {
                     $response = $this->render('activesync.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 } else {
@@ -117,15 +122,16 @@ class AutoDiscoverController extends AbstractController
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 }
                 break;
+            default:
+                throw new BadRequestHttpException();
         }
-
-        $this->logger->info('Response data:');
-        $this->logger->info($response->getContent());
 
         return $response;
     }
 
     /**
+     * This route handles Apple Mobile Config Profile requests
+     *
      * @param Request $request
      * @return Response
      *
@@ -143,17 +149,21 @@ class AutoDiscoverController extends AbstractController
     }
 
     /**
+     * Fetch data from ServiceProvider
+     *
      * @param Email $email
      * @return array
      */
     private function fetchData($email)
     {
+        // Verify that user domain is served by the mail server and populate user object
         if ((null !== $email)&&($this->domainProvider->verifyDomain($email->getDomainPart()))) {
             $user = $this->userFactory->fromString($email);
         } else {
             throw new NotFoundHttpException();
         }
 
+        // Fetch service data
         $provider = $this->serviceProvider->getProvider();
         $imaps = $this->serviceProvider->getImap();
         $pop3s = $this->serviceProvider->getPop3();

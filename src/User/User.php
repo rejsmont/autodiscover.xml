@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the XXX.
+ * This file is part of the Autodiscover.xml
  * 
- * Copyright (c) 2019 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ * Copyright (c) 2019 Radosław Kamil Ejsmont <radoslaw@ejsmont.net>
  * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -36,6 +36,8 @@ class User
     }
 
     /**
+     * Get username
+     *
      * @return string
      */
     public function getUserName()
@@ -44,6 +46,8 @@ class User
     }
 
     /**
+     * Get display name
+     *
      * @return string
      */
     public function getDisplayName()
@@ -52,6 +56,8 @@ class User
     }
 
     /**
+     * Get email
+     *
      * @return Email
      */
     public function getEmail()
@@ -60,6 +66,8 @@ class User
     }
 
     /**
+     * Get domain
+     *
      * @return string
      */
     public function getDomain()

@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the XXX.
+ * This file is part of the Autodiscover.xml
  * 
- * Copyright (c) 2019 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ * Copyright (c) 2019 Radosław Kamil Ejsmont <radoslaw@ejsmont.net>
  * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,6 +13,11 @@
 namespace AutodiscoverXml\Services;
 
 
+/**
+ * Class Server
+ * @package AutodiscoverXml\Services
+ * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
+ */
 class Server
 {
     private $hostname;
@@ -36,6 +41,8 @@ class Server
     }
 
     /**
+     * Get hostname
+     *
      * @return mixed
      */
     public function getHostname()
@@ -44,6 +51,8 @@ class Server
     }
 
     /**
+     * Get port
+     *
      * @return mixed
      */
     public function getPort()
@@ -52,6 +61,8 @@ class Server
     }
 
     /**
+     * Get socket type
+     *
      * @return mixed
      */
     public function getSocket()
@@ -60,6 +71,8 @@ class Server
     }
 
     /**
+     * Get auth schema
+     *
      * @return mixed
      */
     public function getAuth()
@@ -68,6 +81,8 @@ class Server
     }
 
     /**
+     * Get auth schema for Apple devices
+     *
      * @return mixed
      */
     public function getAuthApple()
@@ -90,16 +105,31 @@ class Server
         }
     }
 
+    /**
+     * Does server support secure authentication
+     *
+     * @return bool
+     */
     public function authSecure()
     {
         return ($this->auth == 'password-encrypted');
     }
 
+    /**
+     * Is SSL enabled?
+     *
+     * @return bool
+     */
     public function sslEnabled()
     {
         return ($this->socket == 'SSL');
     }
 
+    /**
+     * Is TLS enabled?
+     *
+     * @return bool
+     */
     public function tlsEnabled()
     {
         return ($this->socket == 'STARTTLS');

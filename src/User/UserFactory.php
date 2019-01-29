@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the XXX.
+ * This file is part of the Autodiscover.xml
  * 
- * Copyright (c) 2019 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ * Copyright (c) 2019 Radosław Kamil Ejsmont <radoslaw@ejsmont.net>
  * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,6 +19,12 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\EmailParser;
 use Egulias\EmailValidator\EmailLexer;
 
+
+/**
+ * Class UserFactory
+ * @package AutodiscoverXml\User
+ * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
+ */
 class UserFactory
 {
     private $validator;
@@ -26,6 +32,11 @@ class UserFactory
     private $userProvider;
     private $emailFactory;
 
+    /**
+     * UserFactory constructor.
+     * @param UserProvider $userProvider
+     * @param EmailFactory $emailFactory
+     */
     public function __construct(UserProvider $userProvider, EmailFactory $emailFactory)
     {
         $this->validator = new EmailValidator();
@@ -35,7 +46,9 @@ class UserFactory
     }
 
     /**
-     * @param $email
+     * Create user from email
+     *
+     * @param string $email
      * @return User|null
      */
     public function fromString($email)

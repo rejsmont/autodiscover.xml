@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the XXX.
+ * This file is part of the Autodiscover.xml
  * 
- * Copyright (c) 2019 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ * Copyright (c) 2019 Radosław Kamil Ejsmont <radoslaw@ejsmont.net>
  * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,6 +25,11 @@ class DoctrineDomainProvider implements DomainProviderInterface
     private $connection;
     private $query;
 
+    /**
+     * DoctrineDomainProvider constructor.
+     * @param Connection $connection
+     * @param string $query
+     */
     public function __construct(Connection $connection, string $query)
     {
         $this->connection = $connection;
@@ -32,8 +37,7 @@ class DoctrineDomainProvider implements DomainProviderInterface
     }
 
     /**
-     * @param string $domain
-     * @return bool
+     * @inheritdoc
      */
     public function verifyDomain(string $domain): bool
     {

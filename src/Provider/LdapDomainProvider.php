@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the XXX.
+ * This file is part of the Autodiscover.xml
  * 
- * Copyright (c) 2019 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ * Copyright (c) 2019 Radosław Kamil Ejsmont <radoslaw@ejsmont.net>
  * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,6 +26,13 @@ class LdapDomainProvider implements DomainProviderInterface
     private $attribute;
     private $ldap;
 
+    /**
+     * LdapDomainProvider constructor.
+     * @param string $base       LDAP base
+     * @param string $filter     LDAP filter
+     * @param string $attribute  LDAP domain attribute
+     * @param LdapConnection $ldap
+     */
     public function __construct($base, $filter, $attribute, LdapConnection $ldap)
     {
         $this->base = $base;
@@ -35,8 +42,7 @@ class LdapDomainProvider implements DomainProviderInterface
     }
 
     /**
-     * @param string $domain
-     * @return bool
+     * @inheritdoc
      */
     public function verifyDomain(string $domain): bool
     {

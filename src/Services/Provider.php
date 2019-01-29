@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the XXX.
+ * This file is part of the Autodiscover.xml
  * 
- * Copyright (c) 2019 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ * Copyright (c) 2019 Radosław Kamil Ejsmont <radoslaw@ejsmont.net>
  * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,12 +13,23 @@
 namespace AutodiscoverXml\Services;
 
 
+/**
+ * Class Provider
+ * @package AutodiscoverXml\Services
+ * @author Radoslaw Kamil Ejsmont <radoslaw@ejsmont.net>
+ */
 class Provider
 {
     private $domain;
     private $name;
     private $shortName;
 
+    /**
+     * Provider constructor.
+     * @param string $domain
+     * @param string $name
+     * @param string $shortName
+     */
     public function __construct($domain, $name, $shortName = null)
     {
         $this->domain = $domain;
@@ -27,7 +38,9 @@ class Provider
     }
 
     /**
-     * @return mixed
+     * Get domain
+     *
+     * @return string
      */
     public function getDomain()
     {
@@ -35,7 +48,9 @@ class Provider
     }
 
     /**
-     * @return mixed
+     * Get domain in reverse notation
+     *
+     * @return string
      */
     public function getDomainRev()
     {
@@ -46,7 +61,9 @@ class Provider
     }
 
     /**
-     * @return mixed
+     * Get provider name
+     *
+     * @return string
      */
     public function getName()
     {
@@ -54,7 +71,9 @@ class Provider
     }
 
     /**
-     * @return mixed
+     * Get short name
+     *
+     * @return string
      */
     public function getShortName()
     {
