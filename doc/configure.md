@@ -1,6 +1,6 @@
-## Configuration
+# Configuration
 
-### Application configuration
+## Application configuration
 
 Configuration is done in [.env.local](examples/.env.local) file.
 First, copy template file to appropriate location:
@@ -42,7 +42,7 @@ include:
  * NTLM
  * GSSAPI
 
-#### Configuration default values
+### Configuration default values
 ```shell
 PROVIDER_NAME=
 PROVIDER_DOMAIN=
@@ -70,7 +70,7 @@ POP3_SERVERS='[]'
 ACTIVESYNC_URL=
 ```
 ---
-### Web server configuration
+## Web server configuration
 
 The application provides the following case-sensitive routes:
 
@@ -83,7 +83,7 @@ GET  /email.mobileconfig?email=
 To provide maximum compatibility and security it's desirable to run this
 application behind a http reverse proxy.
 
-#### Example apache configuration:
+### Example apache configuration:
 This configuration requires `mod_proxy_fcgi`, `mod_setenvif`,
 `mod_rewrite` and `php7.2-fpm`:
 
@@ -92,7 +92,7 @@ This configuration requires `mod_proxy_fcgi`, `mod_setenvif`,
 # sudo a2enconf php7.2-fpm
 ```
 
-##### /etc/apache2/sites-available/090-autodiscover.conf
+#### /etc/apache2/sites-available/090-autodiscover.conf
 ```
 <VirtualHost localhost:8000>
     ServerAdmin webmaster@localhost
@@ -143,14 +143,14 @@ This configuration requires `mod_proxy_fcgi`, `mod_setenvif`,
 </VirtualHost>
 ```
 
-#### Example nginx reverse proxy configuration:
+### Example nginx reverse proxy configuration:
 
 To use the reverse proxy you must install nginx:
 ```shell
 # sudo apt install nginx
 ```
 
-##### /etc/nginx/sites-available/autodiscover
+#### /etc/nginx/sites-available/autodiscover
 ```
     server_name example.org, autoconfig.example.org autodiscover.example.org;
 
