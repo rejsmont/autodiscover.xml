@@ -159,6 +159,7 @@ To use the reverse proxy you must install nginx:
 
 #### /etc/nginx/sites-available/autodiscover
 ```
+server {
     server_name example.org, autoconfig.example.org autodiscover.example.org;
 
     proxy_redirect           off;
@@ -185,4 +186,5 @@ To use the reverse proxy you must install nginx:
     ssl_certificate_key /etc/letsencrypt/live/example.org/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
 ```
