@@ -38,26 +38,31 @@ class AutoDiscoverController extends AbstractController
     private $emailFactory;
     private $serviceProvider;
     private $logger;
+    private $logRequests;
+    private $logResponses;
 
 
     /**
      * AutoDiscoverController constructor.
-     *
      * @param DomainProvider $domainProvider
      * @param UserFactory $userFactory
      * @param EmailFactory $emailFactory
      * @param ServiceProvider $serviceProvider
      * @param LoggerInterface $logger
+     * @param bool $logRequests
+     * @param bool $logResponses
      */
     public function __construct(DomainProvider $domainProvider, UserFactory $userFactory,
                                 EmailFactory $emailFactory, ServiceProvider $serviceProvider,
-                                LoggerInterface $logger)
+                                LoggerInterface $logger, $logRequests, $logResponses)
     {
         $this->domainProvider = $domainProvider;
         $this->userFactory = $userFactory;
         $this->emailFactory = $emailFactory;
         $this->serviceProvider = $serviceProvider;
         $this->logger = $logger;
+        $this->logRequests = $logRequests;
+        $this->logResponses = $logResponses;
     }
 
     /**
@@ -70,11 +75,19 @@ class AutoDiscoverController extends AbstractController
      */
     public function mozilla(Request $request)
     {
+        if ($this->logRequests) {
+            $this->logger->debug("Request: " . $request->getQueryString());
+            $this->logger->debug("Request body:\n" . $request->getContent() . "\n");
+        }
         $email = $this->emailFactory->fromString($request->query->get('emailaddress'));
-        $this->logger->info("Got a Mozilla request for email: " . $email);
+        $this->logger->info('Got a Mozilla request for email: ' . $email);
 
         $response = $this->render('mozilla.xml.twig', $this->fetchData($email));
         $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
+
+        if ($this->logResponses) {
+            $this->logger->debug("Response:\n" . $response->getContent());
+        }
 
         return $response;
     }
@@ -89,6 +102,11 @@ class AutoDiscoverController extends AbstractController
      */
     public function microsoft(Request $request)
     {
+        if ($this->logRequests) {
+            $this->logger->debug("Request: " . $request->getQueryString());
+            $this->logger->debug("Request body:\n" . $request->getContent() . "\n");
+        }
+
         $data = $request->getContent();
         $httpUser = $request->getUser();
         $crawler = new Crawler($data);
@@ -152,6 +170,10 @@ class AutoDiscoverController extends AbstractController
                 throw new BadRequestHttpException();
         }
 
+        if ($this->logResponses) {
+            $this->logger->debug("Response:\n" . $response->getContent());
+        }
+
         return $response;
     }
 
@@ -165,12 +187,21 @@ class AutoDiscoverController extends AbstractController
      */
     public function apple(Request $request)
     {
+        if ($this->logRequests) {
+            $this->logger->debug("Request: " . $request->getQueryString());
+            $this->logger->debug("Request body:\n" . $request->getContent() . "\n");
+        }
+
         $email = $this->emailFactory->fromString($request->query->get('email'));
         $this->logger->info("Got a Apple request for email: " . $email);
 
         $response = $this->render('apple.xml.twig', $this->fetchData($email));
         $response->headers->set('Content-Type', 'application/x-apple-aspen-config; charset=utf-8');
         $response->headers->set('Content-Disposition', 'attachment; filename="${filename}"');
+
+        if ($this->logResponses) {
+            $this->logger->debug("Response:\n" . $response->getContent());
+        }
 
         return $response;
     }
