@@ -80,8 +80,8 @@ services:
         tags: ['app.username_provider']
         arguments:
             $query: '%env(string:DATABASE_USER_QUERY)%'
-            $userNameAttribute: '%env(string:DATABASE_USER_NAME_FIELD)%'
-            $displayNameAttribute: '%env(string:DATABASE_USER_DN_FIELD)%'
+            $userNameField: '%env(string:DATABASE_USER_NAME_FIELD)%'
+            $displayNameField: '%env(string:DATABASE_USER_DN_FIELD)%'
 
     AutodiscoverXml\Provider\ServiceProvider:
         arguments:
