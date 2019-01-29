@@ -63,6 +63,7 @@ class AutoDiscoverController extends AbstractController
     public function mozilla(Request $request)
     {
         $email = $this->emailFactory->fromString($request->query->get('emailaddress'));
+        $this->logger->info("Got email: " . $email);
 
         $response = $this->render('mozilla.xml.twig', $this->fetchData($email));
         $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
