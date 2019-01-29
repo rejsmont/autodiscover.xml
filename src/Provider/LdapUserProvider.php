@@ -76,7 +76,7 @@ class LdapUserProvider implements UserProviderInterface
     private function getEntry(string $email)
     {
         // Check if this provider is configured
-        if (null === $this->base) {
+        if (null == $this->base) {
             return null;
         }
 

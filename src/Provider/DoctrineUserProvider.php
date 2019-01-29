@@ -68,7 +68,7 @@ class DoctrineUserProvider implements UserProviderInterface
      */
     private function getRow(string $email)
     {
-        if (null === $this->query) {
+        if (null == $this->query) {
             return null;
         }
 

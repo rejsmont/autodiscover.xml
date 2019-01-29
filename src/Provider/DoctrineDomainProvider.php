@@ -42,7 +42,7 @@ class DoctrineDomainProvider implements DomainProviderInterface
      */
     public function verifyDomain(string $domain): bool
     {
-        if (null === $this->query) {
+        if (null == $this->query) {
             return null;
         }
 
