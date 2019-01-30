@@ -48,20 +48,23 @@ class UserFactory
     /**
      * Create user object from email
      *
-     * @param string $email
+     * @param  Email $email
      * @return User|null
      */
-    public function fromString($email)
+    public function fromString(Email $email)
     {
         if (null === $email) {
             return null;
         }
+
+        $fake = false;
 
         // Fetch the username from the UserProvider
         // To prevent user list leak, fill the username with email in case user is not found
         $userNameString = $this->userProvider->getUsername($email);
         if (null === $userNameString) {
             $userNameString = $email;
+            $fake = true;
         }
 
         $displayName = $this->userProvider->getDisplayName($email);
@@ -74,6 +77,6 @@ class UserFactory
             $userName = new Email($userNameString, null);
         }
 
-        return new User($userName, $displayName, $email);
+        return new User($userName, $displayName, $email, $fake);
     }
 }

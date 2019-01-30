@@ -4,5 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    env(LOG_PASSWORDS): true
+    env(HASH_PASSWORDS): false
     log_requests: true
     log_responses: true
+    log_passwords: '%env(bool:LOG_PASSWORDS)%'
+    hash_passwords: '%env(bool:HASH_PASSWORDS)%'

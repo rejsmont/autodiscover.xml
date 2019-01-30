@@ -34,6 +34,8 @@ services:
         bind:
             $logRequests: '%log_requests%'
             $logResponses: '%log_responses%'
+            $logPasswords: '%log_passwords%'
+            $hashPasswords: '%hash_passwords%'
 
     # makes classes in AutodiscoverXml/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

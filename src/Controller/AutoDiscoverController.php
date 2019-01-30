@@ -14,6 +14,7 @@ use AutodiscoverXml\Email\Email;
 use AutodiscoverXml\Provider\DomainProvider;
 use AutodiscoverXml\Provider\ServiceProvider;
 use AutodiscoverXml\Email\EmailFactory;
+use AutodiscoverXml\User\User;
 use AutodiscoverXml\User\UserFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +41,8 @@ class AutoDiscoverController extends AbstractController
     private $logger;
     private $logRequests;
     private $logResponses;
-
+    private $logPasswords;
+    private $hashPasswords;
 
     /**
      * AutoDiscoverController constructor.
@@ -51,10 +53,13 @@ class AutoDiscoverController extends AbstractController
      * @param LoggerInterface $logger
      * @param bool $logRequests
      * @param bool $logResponses
+     * @param bool $logPasswords
+     * @param bool $hashPasswords
      */
     public function __construct(DomainProvider $domainProvider, UserFactory $userFactory,
                                 EmailFactory $emailFactory, ServiceProvider $serviceProvider,
-                                LoggerInterface $logger, $logRequests, $logResponses)
+                                LoggerInterface $logger, $logRequests, $logResponses,
+                                $logPasswords, $hashPasswords)
     {
         $this->domainProvider = $domainProvider;
         $this->userFactory = $userFactory;
@@ -63,6 +68,8 @@ class AutoDiscoverController extends AbstractController
         $this->logger = $logger;
         $this->logRequests = $logRequests;
         $this->logResponses = $logResponses;
+        $this->logPasswords = $logPasswords;
+        $this->hashPasswords = $hashPasswords;
     }
 
     /**
@@ -75,19 +82,15 @@ class AutoDiscoverController extends AbstractController
      */
     public function mozilla(Request $request)
     {
-        if ($this->logRequests) {
-            $this->logger->debug("Request: " . $request->getQueryString());
-            $this->logger->debug("Request body:\n" . $request->getContent() . "\n");
-        }
+        $this->logRequest($request);
+
         $email = $this->emailFactory->fromString($request->query->get('emailaddress'));
         $this->logger->info('Got a Mozilla request for email: ' . $email);
 
         $response = $this->render('mozilla.xml.twig', $this->fetchData($email));
         $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
 
-        if ($this->logResponses) {
-            $this->logger->debug("Response:\n" . $response->getContent());
-        }
+        $this->logResponse($response);
 
         return $response;
     }
@@ -102,10 +105,7 @@ class AutoDiscoverController extends AbstractController
      */
     public function microsoft(Request $request)
     {
-        if ($this->logRequests) {
-            $this->logger->debug("Request: " . $request->getQueryString());
-            $this->logger->debug("Request body:\n" . $request->getContent() . "\n");
-        }
+        $this->logRequest($request);
 
         $data = $request->getContent();
         $httpUser = $request->getUser();
@@ -137,7 +137,7 @@ class AutoDiscoverController extends AbstractController
         $email = $this->emailFactory->fromString($string);
         $this->logger->info("Got a Microsoft " . $schema . " request for email: " . $email);
         $data = $this->fetchData($email);
-        $user = $data['user']->getUserName();
+        $user = $data['user']->getUserName(); /* @var User $user */
 
         // Which response to provide?
         switch($schema) {
@@ -153,11 +153,11 @@ class AutoDiscoverController extends AbstractController
                     throw new NotFoundHttpException();
                 }
                 // If client passed authentication information, but it does not match username, return 401
-                if ((null != $httpUser)&&($httpUser != $user)) {
+                if ((null != $httpUser)&&(($httpUser != $user)||($user->isFake()))) {
                     throw new UnauthorizedHttpException('ActiveSync');
                 }
                 // Return ActiveSync response
-                if (($email == $user) || ($httpUser == $user)) {
+                if (((string)$email == (string)$user) || ($httpUser == $user)) {
                     $response = $this->render('activesync.xml.twig', $data);
                     $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
                 } else {
@@ -169,10 +169,7 @@ class AutoDiscoverController extends AbstractController
                 // Something weird happened, return 400
                 throw new BadRequestHttpException();
         }
-
-        if ($this->logResponses) {
-            $this->logger->debug("Response:\n" . $response->getContent());
-        }
+        $this->logResponse($response);
 
         return $response;
     }
@@ -187,10 +184,7 @@ class AutoDiscoverController extends AbstractController
      */
     public function apple(Request $request)
     {
-        if ($this->logRequests) {
-            $this->logger->debug("Request: " . $request->getQueryString());
-            $this->logger->debug("Request body:\n" . $request->getContent() . "\n");
-        }
+        $this->logRequest($request);
 
         $email = $this->emailFactory->fromString($request->query->get('email'));
         $this->logger->info("Got a Apple request for email: " . $email);
@@ -199,11 +193,38 @@ class AutoDiscoverController extends AbstractController
         $response->headers->set('Content-Type', 'application/x-apple-aspen-config; charset=utf-8');
         $response->headers->set('Content-Disposition', 'attachment; filename="${filename}"');
 
+        $this->logResponse($response);
+
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     */
+    private function logRequest(Request $request)
+    {
+        dump($this->logPasswords);
+        dump($this->hashPasswords);
+
+        if ($this->logRequests) {
+            $this->logger->debug("Request: " . $request->getUri());
+            $this->logger->debug("Request user: " . $request->getUser());
+            if ($this->logPasswords) {
+                if ($this->hashPasswords) {
+                    $this->logger->debug("Request hashed password: " . sha1($request->getPassword()));
+                } else {
+                    $this->logger->debug("Request password: " . $request->getPassword());
+                }
+            }
+            $this->logger->debug("Request body:\n" . $request->getContent() . "\n");
+        }
+    }
+
+    private function logResponse(Response $response)
+    {
         if ($this->logResponses) {
             $this->logger->debug("Response:\n" . $response->getContent());
         }
-
-        return $response;
     }
 
     /**

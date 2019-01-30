@@ -21,24 +21,27 @@ class User
     private $displayName;
     private $email;
     private $domain;
+    private $fake;
 
     /**
      * User constructor.
-     * @param $userName
-     * @param $displayName
-     * @param $email
+     * @param Email $userName
+     * @param string $displayName
+     * @param Email $email
+     * @param bool $fake
      */
-    public function __construct(Email $userName, $displayName, Email $email)
+    public function __construct(Email $userName, $displayName, Email $email, $fake = false)
     {
         $this->userName = $userName;
         $this->displayName = $displayName;
         $this->email = $email;
+        $this->fake = $fake;
     }
 
     /**
      * Get username
      *
-     * @return string
+     * @return Email
      */
     public function getUserName()
     {
@@ -74,4 +77,16 @@ class User
     {
         return $this->domain;
     }
+
+    /**
+     * Is user fake?
+     *
+     * @return bool
+     */
+    public function isFake(): bool
+    {
+        return $this->fake;
+    }
+
+
 }

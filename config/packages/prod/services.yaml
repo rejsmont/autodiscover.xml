@@ -6,3 +6,5 @@
 parameters:
     log_requests: false
     log_responses: false
+    log_passwords: false
+    hash_passwords: true
